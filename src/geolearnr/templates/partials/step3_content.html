@@ -23,7 +23,6 @@
     hx-target="#step4-area"
     hx-swap="innerHTML"
     hx-indicator="#compare-spinner"
-    hx-on::after-request="if(event.detail.successful) $dispatch('compare-done')"
   >
     <input type="hidden" name="country" value="{{ country }}" />
     <template x-for="c in selectedCountries" :key="c">
