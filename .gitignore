@@ -191,6 +191,12 @@ cython_debug/
 # Ruff stuff:
 .ruff_cache/
 
+# Prek
+.prek/
+
+# Node
+node_modules/
+
 # PyPI configuration file
 .pypirc
 

@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+
+{% block title %}{{ title }}{% endblock %}
+
+{% block content %}
+<div class="hero min-h-[60vh]">
+  <div class="hero-content text-center">
+    <div class="max-w-md">
+      <h1 class="text-5xl font-bold">GeoLearnr</h1>
+      <p class="py-6 text-base-content/70">
+        Learn geography interactively with AI-powered quizzes.
+      </p>
+      <button
+        class="btn btn-primary btn-lg"
+        hx-get="/quiz/start"
+        hx-target="#content"
+        hx-swap="innerHTML"
+      >
+        Start Learning
+      </button>
+    </div>
+  </div>
+</div>
+
+<div id="content" x-data="{ loaded: false }" x-init="loaded = true">
+  <template x-if="loaded">
+    <p class="text-center text-sm text-base-content/50">Ready.</p>
+  </template>
+</div>
+{% endblock %}
