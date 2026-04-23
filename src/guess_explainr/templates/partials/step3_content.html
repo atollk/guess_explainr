@@ -1,12 +1,12 @@
 <script>
   window.dispatchEvent(new CustomEvent('url-processed', {
-    detail: { country: '{{ country }}', countries: {{ available_countries | tojson }} }
+    detail: { detectedCountryId: '{{ detected_country.id }}', countries: '{{ available_countries_json }}' }
   }));
 </script>
 <div>
   <div class="flex items-center gap-2 mb-4">
     <span class="text-sm font-semibold text-base-content/60 uppercase tracking-wide">Detected country</span>
-    <span class="badge badge-primary badge-lg">{{ country }}</span>
+    <span class="text-lg">{{ detected_country.display_name }}</span>
   </div>
 
   <div class="mb-4">
@@ -15,10 +15,10 @@
       {% for c in available_countries %}
       <button
         type="button"
-        class="badge badge-outline cursor-pointer"
-        :class="selectedCountries.includes('{{ c }}') ? 'badge-primary' : 'badge-ghost'"
-        @click="toggleCountry('{{ c }}')"
-      >{{ c }}</button>
+        class="rounded-xs badge cursor-pointer"
+        :class="selectedCountries.includes('{{ c.id }}') ? 'badge-primary' : 'badge-outline badge-ghost'"
+        @click="toggleCountry('{{ c.id }}')"
+      >{{ c.display_name }}</button>
       {% endfor %}
     </div>
   </div>
@@ -28,15 +28,13 @@
     hx-target="#step4-area"
     hx-swap="innerHTML"
     hx-indicator="#compare-spinner"
+    hx-ext="json-enc"
+    :hx-vals="JSON.stringify({compare_countries: selectedCountries})"
   >
-    <input type="hidden" name="country" value="{{ country }}" />
-    <template x-for="c in selectedCountries" :key="c">
-      <input type="hidden" name="compare_countries" :value="c" />
-    </template>
     <div class="form-control mb-4">
-      <label class="label"><span class="label-text">Custom questions (optional)</span></label>
-      <textarea name="questions" class="textarea textarea-bordered w-full" rows="3"
-        placeholder="e.g. Compare their healthcare systems…"></textarea>
+      <label class="label" for="questions"><span class="label-text">Custom questions (optional)</span></label>
+      <textarea id="questions" name="questions" class="textarea textarea-bordered w-full" rows="3"
+        placeholder="for example: How can I separate Sweden from Norway?"></textarea>
     </div>
     <div class="flex items-center gap-3">
       <button

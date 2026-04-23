@@ -6,7 +6,6 @@ class ProcessUrlRequest(BaseModel):
 
 
 class CompareRequest(BaseModel):
-    country: str
     compare_countries: list[str]
     questions: str
 

@@ -73,11 +73,8 @@
         <h2 class="card-title">Analysis &amp; Chat</h2>
 
         <div id="step4-area">
-          <!-- Populated by /api/compare response -->
+          <!-- Populated by /api/compare response; includes #chat-messages and the form -->
         </div>
-
-        <!-- Chat injection point: new message rows appended here by sendChat() -->
-        <div id="chat-stream-area" class="flex flex-col gap-2"></div>
       </div>
     </div>
   </section>
@@ -101,9 +98,11 @@ function wizard() {
     },
 
     onUrlProcessed(detail) {
-      this.country = detail.country;
-      this.availableCountries = detail.countries;
-      this.selectedCountries = [];
+      this.availableCountries = {};
+      for ({id, displayName} of detail.countries) {
+        this.availableCountries[id] = displayName
+      }
+      this.selectedCountries = [detail.detectedCountryId];
       this.step = 3;
     },
 
@@ -117,7 +116,7 @@ function wizard() {
     },
 
     sendChat({ url, message }) {
-      const area = document.getElementById('chat-stream-area');
+      const area = document.getElementById('chat-messages');
 
       // User bubble
       const userBubble = document.createElement('div');
@@ -139,9 +138,14 @@ function wizard() {
         ></div>`;
       area.appendChild(responseBubble);
 
-      // Let HTMX process the newly added SSE element
+      // Let HTMX process the newly added SSE element, then scroll to newest message
       htmx.process(responseBubble);
-      area.scrollIntoView({ behavior: 'smooth', block: 'end' });
+      area.scrollTop = area.scrollHeight;
+
+      // Keep scrolling to bottom as SSE tokens stream in
+      const observer = new MutationObserver(() => { area.scrollTop = area.scrollHeight; });
+      observer.observe(responseBubble, { childList: true, subtree: true, characterData: true });
+      responseBubble.addEventListener('htmx:sseClose', () => observer.disconnect(), { once: true });
     },
 
     _escape(str) {
