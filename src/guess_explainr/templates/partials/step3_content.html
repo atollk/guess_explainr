@@ -8,14 +8,14 @@
     {% if panorama_available %}
     <div x-data>
       <img
-        src="/api/panorama-image"
+        src="/api/panorama-image?v={{ panorama_token }}"
         @click="$refs.panoramaDialog.showModal()"
         class="w-40 h-28 object-cover rounded-lg cursor-pointer hover:opacity-80 transition-opacity flex-shrink-0"
         alt="Street View panorama"
       />
       <dialog x-ref="panoramaDialog" class="modal">
         <div class="modal-box max-w-5xl p-2">
-          <img src="/api/panorama-image" class="w-full rounded-lg" alt="Street View panorama" />
+          <img src="/api/panorama-image?v={{ panorama_token }}" class="w-full rounded-lg" alt="Street View panorama" />
         </div>
         <form method="dialog" class="modal-backdrop"><button>close</button></form>
       </dialog>

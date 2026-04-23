@@ -1,4 +1,5 @@
 import html as _html
+import re
 import uuid
 from collections.abc import AsyncGenerator
 
@@ -9,6 +10,13 @@ from litestar.response import ServerSentEvent
 from litestar.types import SSEData
 
 from guess_explainr.ai import stream_analysis
+
+
+def _render(text: str) -> str:
+    # The Markdown library requires a blank line before a list when it follows
+    # a paragraph; LLMs often omit that blank line, so we insert it.
+    text = re.sub(r"(?m)(?<=[^\n])\n([ \t]*[*\-+] )", r"\n\n\1", text)
+    return _md.markdown(text, extensions=["extra"])
 
 
 @get("/chat")
@@ -22,7 +30,7 @@ async def chat(message: str, context: str = "") -> ServerSentEvent:
             "Real answers will come from the configured LLM. "
             "The context was: " + (context or "(none)") + "."
         )
-        rendered = _md.markdown(mock)
+        rendered = _render(mock)
         yield {"data": rendered, "event": "done"}
 
     return ServerSentEvent(_stream())
@@ -43,7 +51,7 @@ async def analysis_stream(countries: str, questions: str = "") -> ServerSentEven
         try:
             rendered = ""
             async for partial_text in stream_analysis(country_ids, questions, only_delta=False):
-                rendered = _md.markdown(partial_text, extensions=["extra"])
+                rendered = _render(partial_text)
                 yield {"data": rendered, "event": "msg"}
             yield {"data": rendered, "event": "done"}
         except Exception as e:

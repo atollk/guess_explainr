@@ -4,6 +4,7 @@ import glob
 import json
 import re
 import urllib.parse
+import uuid
 from dataclasses import dataclass
 
 from geopy import Location
@@ -265,6 +266,7 @@ async def process_url(data: ProcessUrlRequest) -> Template:
             "available_countries": COUNTRIES,
             "available_countries_json": json.dumps([dataclasses.asdict(c) for c in COUNTRIES]),
             "panorama_available": state.in_memory_state.panorama_image_bytes is not None,
+            "panorama_token": uuid.uuid4().hex,
         },
     )
 
