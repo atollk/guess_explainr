@@ -9,7 +9,7 @@ from guess_explainr.routes.step4 import chat, new_chat_id
 
 @get("/")
 async def index() -> Template:
-    return Template(template_name="wizard.html", context={"title": "GeoLearnr"})
+    return Template(template_name="wizard.html", context={"title": "Guess Explainr"})
 
 
 api_router = Router(

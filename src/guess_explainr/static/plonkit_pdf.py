@@ -207,8 +207,7 @@ def _build_html(data: dict, image_transform: Callable[[bytes], bytes] | None = N
 
                 text_html = "".join(f"<p>{_md_to_html(t)}</p>" for t in texts)
                 parts.append(
-                    f'<div class="tip">{img_html}'
-                    f'<div class="tip-text">{text_html}</div></div>'
+                    f'<div class="tip">{img_html}<div class="tip-text">{text_html}</div></div>'
                 )
 
     parts.append("</body></html>")
@@ -257,11 +256,15 @@ def fetch_country_guide_pdf(
         print(f"Running weasyprint via {runner}...")
         subprocess.run(
             [
-                runner, "run", "--rm",
+                runner,
+                "run",
+                "--rm",
                 "--privileged",  # needed for /dev/stdout on rootless podman
-                "-v", f"{tmpdir}:/work",
+                "-v",
+                f"{tmpdir}:/work",
                 "minidocks/weasyprint",
-                "/work/guide.html", "/work/guide.pdf",
+                "/work/guide.html",
+                "/work/guide.pdf",
             ],
             check=True,
         )

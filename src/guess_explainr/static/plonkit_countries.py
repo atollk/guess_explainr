@@ -2,7 +2,7 @@
 
 import json
 from dataclasses import dataclass
-from datetime import datetime, timezone
+from datetime import datetime
 
 import requests
 from bs4 import BeautifulSoup
@@ -56,7 +56,6 @@ def fetch_countries() -> list[Country]:
         if entry.get("slug") and entry["slug"] not in exclude
     ]
     return sorted(countries, key=lambda c: c.slug)
-
 
 
 if __name__ == "__main__":
