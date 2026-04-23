@@ -29,6 +29,9 @@ dev = [
     "pillow>=12.2.0",
 ]
 
+[project.scripts]
+guess-explainr = "guess_explainr.__main__:main"
+
 [build-system]
 requires = ["hatchling"]
 build-backend = "hatchling.build"

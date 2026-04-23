@@ -8,7 +8,7 @@ from litestar.template.config import TemplateConfig
 
 from guess_explainr.routes.index import api_router, router
 
-_BASE = Path(__file__).parent
+BASE_PATH = Path(__file__).parent
 
 logging_config = LoggingConfig(
     root={"level": "INFO"},
@@ -18,12 +18,12 @@ logging_config = LoggingConfig(
 app = Litestar(
     route_handlers=[router, api_router],
     template_config=TemplateConfig(
-        directory=_BASE / "templates",
+        directory=BASE_PATH / "templates",
         engine=JinjaTemplateEngine,
     ),
     static_files_config=[
         StaticFilesConfig(
-            directories=[_BASE / "static"],
+            directories=[BASE_PATH / "static"],
             path="/static",
         ),
     ],
