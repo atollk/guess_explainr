@@ -11,7 +11,7 @@ steps:
     # Use the non-slim image so git and curl are available.
     image: ghcr.io/astral-sh/uv:python3.12-bookworm
     # Secret "GIT_PUSH_TOKEN" must be added in the Woodpecker repo settings.
-    settings:
+    environment:
       GIT_PUSH_TOKEN:
         from_secret: GIT_PUSH_TOKEN
     commands:
