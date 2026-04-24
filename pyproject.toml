@@ -65,9 +65,6 @@ project_includes = ["src"]
 python_version = "3.12"
 search_path = ["src", "src/guess_explainr/static"]
 
-[tool.uv.sources]
-streetview-dl = { git = "https://github.com/stiles/streetview-dl" }
-
 [tool.pytest.ini_options]
 asyncio_mode = "auto"
 testpaths = ["tests"]

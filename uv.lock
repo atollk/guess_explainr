@@ -1234,7 +1234,7 @@ requires-dist = [
     { name = "platformdirs", specifier = ">=4.9.6" },
     { name = "pydantic-ai", specifier = ">=1.86.0" },
     { name = "streetview", specifier = ">=0.1.0" },
-    { name = "streetview-dl", git = "https://github.com/stiles/streetview-dl" },
+    { name = "streetview-dl" },
     { name = "uvicorn", extras = ["standard"], specifier = ">=0.45" },
 ]
 
@@ -4071,13 +4071,17 @@ wheels = [
 [[package]]
 name = "streetview-dl"
 version = "0.7.0"
-source = { git = "https://github.com/stiles/streetview-dl#854d8868a9ebdcd398d38a7944e0d10d401c12ad" }
+source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "click" },
     { name = "pillow" },
     { name = "pydantic" },
     { name = "requests" },
     { name = "rich" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/3a/8a/3833dc17856c676c349776600c8c35e06ca71157ce8d8329a5774d0a57bc/streetview_dl-0.7.0.tar.gz", hash = "sha256:e8f91dc9fd59f20c713a58994322bf2fc3952b037d466fcb573b80a8384cf37d", size = 41941, upload-time = "2026-04-02T18:36:31.39Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/b9/cb/e1d4faf0e4db8319be14abfe8e709a6efe72b53f6c543c3bf39b701a8d65/streetview_dl-0.7.0-py3-none-any.whl", hash = "sha256:9c1a10db2ee391b9b5a65dd0055044f0c9f09e4b2da2c7833b882fd6b0c9a092", size = 33272, upload-time = "2026-04-02T18:36:30.417Z" },
 ]
 
 [[package]]
