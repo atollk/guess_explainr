@@ -6,7 +6,12 @@ The idea of Guess Explainr is to use AI in combination with community guides (sh
 As an example, you might have guessed "Indonesia" on a round but your opponent correctly deduced "Malaysia" as the actual country - you can use Guess Explainr to understand which clues your opponent might have used and learn them for your next game.
 
 > [!IMPORTANT]
-> Guess Explainr is currently in an Early Release. Not all features might function properly. Create an issue if you are encountering problems.
+> Guess Explainr is currently in an Early Release.
+> Not all features might function properly.
+> Notably, the analysis chat to ask further questions is not implemented yet.
+> Also, it mostly works for No Move games at the moment, as it does not support videos or limited views.
+>
+> Feel free to create an issue here if you are encountering problems.
 
 
 ## Screenshots
