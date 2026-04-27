@@ -55,5 +55,6 @@ check: lint fmt-check typecheck
 
 # Regenerate the Plonkit PDF guides (can take a long time; requires Docker)
 pull-sources:
+    #!/usr/bin/env zsh
     docker pull minidocks/weasyprint
     cd plonkit && uv run python fetch_plonkit.py
