@@ -846,6 +846,18 @@ wheels = [
 ]
 
 [[package]]
+name = "geoguessr-async"
+version = "2.1.0"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "aiohttp" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/1e/43/a7f1fdb4bb58ed196635fe5bab97b4b6ad9f6d17366a3794eb6e937e8ef3/geoguessr_async-2.1.0.tar.gz", hash = "sha256:ad715571a0312b241b3e9a8f2b1cefe66d1dd902ba292394b1412d0840beacc9", size = 33842, upload-time = "2026-04-19T13:17:29.45Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/a0/4a/3baf136769dce2d3b73b7de8545f8f27b74c94d9794370a40dadff6cee29/geoguessr_async-2.1.0-py3-none-any.whl", hash = "sha256:53c91f1d563fc2027fff74753d7d7087686fd37bfebb4b448a7cbaee0b0be42c", size = 17981, upload-time = "2026-04-19T13:17:28.459Z" },
+]
+
+[[package]]
 name = "geopy"
 version = "2.4.1"
 source = { registry = "https://pypi.org/simple" }
@@ -1028,6 +1040,7 @@ version = "0.1"
 source = { editable = "." }
 dependencies = [
     { name = "frozendict" },
+    { name = "geoguessr-async" },
     { name = "geopy" },
     { name = "litestar" },
     { name = "markdown" },
@@ -1055,6 +1068,7 @@ dev = [
 [package.metadata]
 requires-dist = [
     { name = "frozendict", specifier = ">=2.4.7" },
+    { name = "geoguessr-async", specifier = ">=2.1.0" },
     { name = "geopy", specifier = ">=2.4.1" },
     { name = "litestar", specifier = ">=2.14" },
     { name = "markdown", specifier = ">=3.10.2" },

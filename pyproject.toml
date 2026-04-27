@@ -6,6 +6,7 @@ readme = "README.md"
 requires-python = ">=3.12"
 dependencies = [
     "frozendict>=2.4.7",
+    "geoguessr-async>=2.1.0",
     "geopy>=2.4.1",
     "litestar>=2.14",
     "markdown>=3.10.2",

@@ -3,14 +3,14 @@
   import type { Country } from '../lib/api'
 
   interface Props {
-    onurlprocessed: (data: {
+    onUrlProcessed: (data: {
       detectedCountry: Country
       availableCountries: Country[]
       panoramaAvailable: boolean
     }) => void
   }
 
-  const { onurlprocessed }: Props = $props()
+  const { onUrlProcessed }: Props = $props()
 
   const EXAMPLE_URL =
     'https://www.google.com/maps/@38.0691925,22.2390295,3a,90y,302.4h,92.61t/data=!3m7!1e1!3m5!1sC7dD4mGuuHHm6SjUq80gtw!2e0!6shttps:%2F%2Fstreetviewpixels-pa.googleapis.com%2Fv1%2Fthumbnail%3Fcb_client%3Dmaps_sv.tactile%26w%3D900%26h%3D600%26pitch%3D-2.612560000000002%26panoid%3DC7dD4mGuuHHm6SjUq80gtw%26yaw%3D302.40146!7i16384!8i8192?entry=ttu&g_ep=EgoyMDI2MDEwNC4wIKXMDSoASAFQAw%3D%3D'
@@ -25,7 +25,7 @@
     error = undefined
     try {
       const res = await processUrl(url)
-      onurlprocessed({
+      onUrlProcessed({
         detectedCountry: res.detected_country,
         availableCountries: res.available_countries,
         panoramaAvailable: res.panorama_available,
