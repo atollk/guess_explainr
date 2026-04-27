@@ -1,5 +1,4 @@
 import asyncio
-import dataclasses
 import glob
 import re
 import urllib.parse
@@ -9,6 +8,7 @@ from geopy import Location
 from geopy.geocoders import Nominatim
 from litestar import post
 from litestar.exceptions import HTTPException
+from pydantic import BaseModel
 
 from guess_explainr import state
 from guess_explainr.models import ProcessUrlRequest
@@ -241,8 +241,14 @@ async def _country_from_coords(lat: float, lon: float) -> _Country | None:
     return next((country for country in COUNTRIES if country.id == slug), None)
 
 
+class _ProcessUrlResponse(BaseModel):
+    detected_country: _Country
+    available_countries: list[_Country]
+    panorama_available: bool
+
+
 @post("/process-url")
-async def process_url(data: ProcessUrlRequest) -> dict:
+async def process_url(data: ProcessUrlRequest) -> _ProcessUrlResponse:
     location = GoogleMapsLocation.parse(data.url)
     state.panorama_state.panorama_id = location.panorama_id
     state.panorama_state.panorama_image_bytes = None
@@ -256,20 +262,8 @@ async def process_url(data: ProcessUrlRequest) -> dict:
         raise HTTPException(status_code=400, detail=str(e)) from e
     if country is None:
         country = _Country(id="", display_name="")
-    return {
-        "detected_country": dataclasses.asdict(country),
-        "available_countries": [dataclasses.asdict(c) for c in COUNTRIES],
-        "panorama_available": state.panorama_state.panorama_image_bytes is not None,
-    }
-
-
-def extract_panorama_id(url: str) -> str:
-    """Extract the Street View panorama ID from a Google Maps URL."""
-    url_decoded = urllib.parse.unquote(url)
-    match = re.search("panoid=([^!]+)[&$]", url_decoded)
-    if match:
-        return match.group(1)
-    match = re.search(r"!1s([^!]+)!", url)
-    if match:
-        return match.group(1)
-    return ""
+    return _ProcessUrlResponse(
+        detected_country=country,
+        available_countries=COUNTRIES,
+        panorama_available=state.panorama_state.panorama_image_bytes is not None,
+    )

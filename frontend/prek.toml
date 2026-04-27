@@ -1,0 +1,12 @@
+minimum_prek_version = "0.1.0"
+
+# Prettier – frontend formatting
+[[repos]]
+repo = "local"
+
+[[repos.hooks]]
+id = "prettier"
+name = "prettier"
+entry = "npm run format"
+language = "system"
+files = "^frontend/.*\\.(ts|svelte|css|html)$"

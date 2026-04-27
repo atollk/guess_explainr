@@ -32,7 +32,7 @@ If interest for the application grows, adding a prebuilt executable is on the to
 [Installing uvx](https://docs.astral.sh/uv/getting-started/installation/)
 
 Open a command line terminal and run the command :
-`uvx --from=git+https://github.com/atollk/guess_explainr.git guess-explainr`
+`uvx --from=git+https://github.com/atollk/guess_explainr.git@7a2cbb50eafbfb18700059fc6c02d41e306cdceb guess-explainr`
 
 This will start the application and open a browser window at http://127.0.0.1:8000/ to access it.
 On slower computers, the browser tab may open before the application is ready - in that case, just refresh after a few seconds.
@@ -42,7 +42,7 @@ On slower computers, the browser tab may open before the application is ready - 
 [Installing pipx](https://pipx.pypa.io/stable/how-to/install-pipx/)
 
 Open a command line terminal and run the command :
-`pipx --spec git+https://github.com/atollk/guess_explainr.git guess-explainr`
+`pipx --spec git+https://github.com/atollk/guess_explainr.git@7a2cbb50eafbfb18700059fc6c02d41e306cdceb guess-explainr`
 
 This will start the application and open a browser window at http://127.0.0.1:8000/ to access it.
 On slower computers, the browser tab may open before the application is ready - in that case, just refresh after a few seconds.

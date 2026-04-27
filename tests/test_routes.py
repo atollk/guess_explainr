@@ -124,8 +124,8 @@ def test_analysis_stream_error_emits_done(client, monkeypatch):
 
     r = client.get("/api/analysis-stream?countries=france")
     assert r.status_code == 200
-    # Error path must still close the stream with a done event
-    assert "event: done" in r.text
+    # Error path must still close the stream with an error event
+    assert "event: error" in r.text
     assert "LLM unavailable" in r.text
 
 

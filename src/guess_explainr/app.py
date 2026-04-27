@@ -3,7 +3,7 @@ from pathlib import Path
 
 from litestar import Litestar
 from litestar.logging import LoggingConfig
-from litestar.static_files import StaticFilesConfig
+from litestar.static_files import create_static_files_router
 
 from guess_explainr.plonkit_cache import sync_plonkit_files
 from guess_explainr.routes.index import api_router, router
@@ -24,12 +24,13 @@ async def _start_plonkit_sync(app: Litestar) -> None:
 
 
 app = Litestar(
-    route_handlers=[router, api_router],
     on_startup=[_start_plonkit_sync],
-    static_files_config=[
-        StaticFilesConfig(
-            directories=[BASE_PATH / "static"],
+    route_handlers=[
+        router,
+        api_router,
+        create_static_files_router(
             path="/static",
+            directories=[BASE_PATH / "static"],
         ),
     ],
     logging_config=logging_config,

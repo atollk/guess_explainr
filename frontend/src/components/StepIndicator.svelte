@@ -1,18 +1,18 @@
 <script lang="ts">
     interface Props {
-        step: number
-        maxReached: number
-        onStepClick: (n: number) => void
+        step: number;
+        maxReached: number;
+        onStepClick: (n: number) => void;
     }
 
-    const {step, maxReached, onStepClick}: Props = $props()
+    const {step, maxReached, onStepClick}: Props = $props();
 
     const steps = [
-        {label: 'LLM Config', n: 1},
-        {label: 'Maps URL', n: 2},
-        {label: 'Compare', n: 3},
-        {label: 'Analysis', n: 4},
-    ]
+        {label: "LLM Config", n: 1},
+        {label: "Maps URL", n: 2},
+        {label: "Compare", n: 3},
+        {label: "Analysis", n: 4},
+    ];
 </script>
 
 <ul class="steps w-full mb-8">

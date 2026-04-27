@@ -1,76 +1,93 @@
 <script lang="ts">
-  import { onMount, onDestroy } from 'svelte'
-  import { connectSSE } from '../lib/sse'
+  import { onMount, onDestroy } from "svelte";
+  import { connectSSE } from "../lib/sse";
+  import SvelteMarkdown from "@humanspeak/svelte-markdown";
 
   interface Props {
-    streamUrl: string
-    context: string
+    streamUrl: string;
+    context: string;
   }
 
-  const { streamUrl, context }: Props = $props()
+  const { streamUrl, context }: Props = $props();
 
   interface ChatMessage {
-    id: string
-    userText: string
-    responseHtml: string
-    loading: boolean
+    id: string;
+    userText: string;
+    responseHtml: string;
+    loading: boolean;
   }
 
-  let analysisHtml = $state('')
-  let analysisDone = $state(false)
-  let messages: ChatMessage[] = $state([])
-  let chatInput = $state('')
-  let chatArea: HTMLDivElement | undefined = $state(undefined)
+  let analysisMarkdown = $state("");
+  let analysisError: string | undefined = $state();
+  let analysisDone = $state(false);
+  let messages: ChatMessage[] = $state([]);
+  let chatInput = $state("");
+  let chatArea: HTMLDivElement | undefined = $state();
 
-  let cleanupSSE: (() => void) | undefined
+  let cleanupSSE: (() => void) | undefined;
 
   onMount(() => {
     cleanupSSE = connectSSE(
       streamUrl,
-      (html) => { analysisHtml = html },
-      (html) => { analysisHtml = html; analysisDone = true },
-    )
-  })
+      (data) => {
+        analysisMarkdown = data;
+      },
+      (data) => {
+        analysisMarkdown = data;
+        analysisDone = true;
+      },
+      (data) => {
+        analysisError = data;
+      },
+    );
+  });
 
   onDestroy(() => {
-    cleanupSSE?.()
-  })
+    cleanupSSE?.();
+  });
 
   function scrollChat() {
     setTimeout(() => {
-      if (chatArea) chatArea.scrollTop = chatArea.scrollHeight
-    }, 50)
+      if (chatArea) chatArea.scrollTop = chatArea.scrollHeight;
+    }, 50);
   }
 
   function sendChat(e: SubmitEvent) {
-    e.preventDefault()
-    const msg = chatInput.trim()
-    if (!msg) return
-    chatInput = ''
+    e.preventDefault();
+    const msg = chatInput.trim();
+    if (!msg) return;
+    chatInput = "";
 
-    const id = crypto.randomUUID()
-    messages = [...messages, { id, userText: msg, responseHtml: '', loading: true }]
-    scrollChat()
+    const id = crypto.randomUUID();
+    messages = [
+      ...messages,
+      { id, userText: msg, responseHtml: "", loading: true },
+    ];
+    scrollChat();
 
-    const url = `/api/chat?message=${encodeURIComponent(msg)}&context=${encodeURIComponent(context)}`
-    const es = new EventSource(url)
+    const url = `/api/chat?message=${encodeURIComponent(msg)}&context=${encodeURIComponent(context)}`;
+    const es = new EventSource(url);
 
-    es.addEventListener('done', (e: MessageEvent) => {
+    es.addEventListener("done", (e: MessageEvent) => {
       messages = messages.map((m) =>
         m.id === id ? { ...m, responseHtml: e.data, loading: false } : m,
-      )
-      es.close()
-      scrollChat()
-    })
+      );
+      es.close();
+      scrollChat();
+    });
 
     es.onerror = () => {
       messages = messages.map((m) =>
         m.id === id
-          ? { ...m, responseHtml: '<p class="text-error">Error loading response</p>', loading: false }
+          ? {
+              ...m,
+              responseHtml: '<p class="text-error">Error loading response</p>',
+              loading: false,
+            }
           : m,
-      )
-      es.close()
-    }
+      );
+      es.close();
+    };
   }
 </script>
 
@@ -78,11 +95,18 @@
   {#if !analysisDone}
     <div class="flex items-center gap-2 text-sm text-base-content/60">
       <span class="loading loading-dots loading-xs"></span>
-      <span>Analyzing…</span>
+      <span>Analyzing...</span>
     </div>
   {/if}
-  <!-- eslint-disable-next-line svelte/no-at-html-tags -->
-  {@html analysisHtml}
+
+  <!-- TODO: use streaming feature -->
+  <SvelteMarkdown source={analysisMarkdown} />
+
+  {#if analysisError !== undefined}
+    <p class="text-error">
+      {analysisError}
+    </p>
+  {/if}
 </div>
 
 <div class="divider"></div>
@@ -121,6 +145,7 @@
 
 <div class="mt-12 text-xs">
   All textual content (i.e., not program code or images) is published under
-  <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/">CC BY-NC-SA 4.0</a>.
-  The original content is attributed to www.plonkit.com.
+  <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/"
+    >CC BY-NC-SA 4.0</a
+  >. The original content is attributed to www.plonkit.com.
 </div>

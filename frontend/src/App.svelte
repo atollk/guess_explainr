@@ -1,12 +1,14 @@
 <script lang="ts">
-  import { onMount } from 'svelte'
-  import { getConfig, getPlonkitStatus } from './lib/api'
-  import type { Country } from './lib/api.ts'
-  import StepIndicator from './components/StepIndicator.svelte'
-  import Step1Config from './components/Step1Config.svelte'
-  import Step2Url from './components/Step2Url.svelte'
-  import Step3Countries from './components/Step3Countries.svelte'
-  import Step4Analysis from './components/Step4Analysis.svelte'
+  import { onMount } from "svelte";
+  import { getConfig, getPlonkitStatus } from "./lib/api";
+  import type { Country } from "./lib/api.ts";
+  import StepIndicator from "./components/StepIndicator.svelte";
+  import Step1Config from "./components/Step1Config.svelte";
+  import Step2Url from "./components/Step2Url.svelte";
+  import Step3Countries from "./components/Step3Countries.svelte";
+  import Step4Analysis from "./components/Step4Analysis.svelte";
+
+  type stepsType = 1 | 2 | 3 | 4;
 
   // --- PlonkIt sync state ---
   let plonkitReady = $state(false)
@@ -15,8 +17,8 @@
   let plonkitError: string | null = $state(null)
 
   // --- Wizard state ---
-  let step: 1 | 2 | 3 | 4 = $state(1)
-  let maxReached: 1 | 2 | 3 | 4 = $state(1)
+  let step: stepsType= $state(1)
+  let maxReached: stepsType = $state(1)
   let availableCountries: Country[] = $state([])
   let detectedCountry: Country | null = $state(null)
   let panoramaAvailable = $state(false)
@@ -44,52 +46,54 @@
 
     // Then check whether the LLM is already configured
     try {
-      const cfg = await getConfig()
+      const cfg = await getConfig();
       if (cfg.configured) {
-        step = 2
-        maxReached = 2
+        step = 2;
+        maxReached = 2;
       }
     } catch (_) {}
-  })
+  });
 
-  function advance(n: 1 | 2 | 3 | 4) {
-    step = n
-    if (n > maxReached) maxReached = n
+  function goToStep(n: stepsType) {
+    step = n;
+    if (n > maxReached) maxReached = n;
   }
 
   function onSaved() {
-    advance(2)
+    goToStep(2);
   }
 
   function onUrlProcessed(data: {
-    detectedCountry: Country
-    availableCountries: Country[]
-    panoramaAvailable: boolean
+    detectedCountry: Country;
+    availableCountries: Country[];
+    panoramaAvailable: boolean;
   }) {
-    availableCountries = data.availableCountries
-    detectedCountry = data.detectedCountry
-    panoramaAvailable = data.panoramaAvailable
-    selectedCountries = data.detectedCountry.id ? [data.detectedCountry.id] : []
-    advance(3)
+    availableCountries = data.availableCountries;
+    detectedCountry = data.detectedCountry;
+    panoramaAvailable = data.panoramaAvailable;
+    selectedCountries = data.detectedCountry.id
+      ? [data.detectedCountry.id]
+      : [];
+    goToStep(3);
   }
 
   function toggleCountry(id: string) {
-    const idx = selectedCountries.indexOf(id)
+    const idx = selectedCountries.indexOf(id);
     if (idx >= 0) {
-      selectedCountries = selectedCountries.filter((c) => c !== id)
+      selectedCountries = selectedCountries.filter((c) => c !== id);
     } else if (selectedCountries.length < 4) {
-      selectedCountries = [...selectedCountries, id]
+      selectedCountries = [...selectedCountries, id];
     }
   }
 
   function onCompared(data: { streamUrl: string; context: string }) {
-    streamUrl = data.streamUrl
-    chatContext = data.context
-    advance(4)
+    streamUrl = data.streamUrl;
+    chatContext = data.context;
+    goToStep(4);
   }
 
   function onStepClick(n: number) {
-    if (n <= maxReached) step = n as 1 | 2 | 3 | 4
+    if (n <= maxReached) step = n as stepsType;
   }
 </script>
 

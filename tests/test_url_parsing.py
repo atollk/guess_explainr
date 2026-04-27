@@ -2,7 +2,6 @@ from guess_explainr.routes.step2 import (
     GoogleMapsLocation,
     _display_name,
     _flag,
-    extract_panorama_id,
 )
 
 # A real-looking Google Maps Street View share URL.
@@ -51,25 +50,6 @@ def test_parse_negative_coords():
     loc = GoogleMapsLocation.parse(url)
     assert abs(loc.latitude - (-33.8688)) < 1e-4
     assert abs(loc.longitude - 151.2093) < 1e-4
-
-
-# ---------------------------------------------------------------------------
-# extract_panorama_id
-# ---------------------------------------------------------------------------
-
-
-def test_extract_from_encoded_segment():
-    # Falls back to !1s<id>! pattern in the original (non-decoded) URL
-    assert extract_panorama_id(FULL_URL) == EXPECTED_PANO_ID
-
-
-def test_extract_from_panoid_query_param():
-    url = "https://example.com?panoid=TESTID123&foo=bar"
-    assert extract_panorama_id(url) == "TESTID123"
-
-
-def test_extract_missing():
-    assert extract_panorama_id("https://example.com") == ""
 
 
 # ---------------------------------------------------------------------------

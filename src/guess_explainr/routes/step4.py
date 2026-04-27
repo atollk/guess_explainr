@@ -1,25 +1,13 @@
-import html as _html
-import re
 import uuid
 from collections.abc import AsyncGenerator
 
-import markdown as _md
 from litestar import get
 from litestar.exceptions import HTTPException
-from litestar.response import ServerSentEvent
+from litestar.response import ServerSentEvent, ServerSentEventMessage
 from litestar.types import SSEData
+from pydantic import BaseModel
 
 from guess_explainr.ai import stream_analysis
-
-
-def _render(text: str) -> str:
-    # The Markdown library requires a blank line before a list when it follows
-    # a paragraph; LLMs often omit that blank line, so we insert it.
-    # The negative lookahead (?![ \t]*[*\-+] ) ensures we only match lines that
-    # are NOT themselves list items, so existing list items don't get a blank
-    # line inserted between them (which would make a "loose" list).
-    text = re.sub(r"(?m)^(?![ \t]*[*\-+] )(.+)\n([ \t]*[*\-+] )", r"\1\n\n\2", text)
-    return _md.markdown(text, extensions=["extra"])
 
 
 @get("/chat")
@@ -33,15 +21,18 @@ async def chat(message: str, context: str = "") -> ServerSentEvent:
             "Real answers will come from the configured LLM. "
             "The context was: " + (context or "(none)") + "."
         )
-        rendered = _render(mock)
-        yield {"data": rendered, "event": "done"}
+        yield {"data": mock, "event": "done"}
 
     return ServerSentEvent(_stream())
 
 
+class _NewChatIdResponse(BaseModel):
+    id: str
+
+
 @get("/new-chat-id")
-async def new_chat_id() -> dict:
-    return {"id": str(uuid.uuid4())}
+async def new_chat_id() -> _NewChatIdResponse:
+    return _NewChatIdResponse(id=str(uuid.uuid4()))
 
 
 @get("/analysis-stream")
@@ -50,15 +41,13 @@ async def analysis_stream(countries: str, questions: str = "") -> ServerSentEven
     if not country_ids:
         raise HTTPException(status_code=400, detail="countries is required")
 
-    async def _stream() -> AsyncGenerator[SSEData, None]:
+    async def _stream() -> AsyncGenerator[ServerSentEventMessage, None]:
         try:
-            rendered = ""
+            partial_text = ""
             async for partial_text in stream_analysis(country_ids, questions, only_delta=False):
-                rendered = _render(partial_text)
-                yield {"data": rendered, "event": "msg"}
-            yield {"data": rendered, "event": "done"}
+                yield ServerSentEventMessage(data=partial_text, event="msg")
+            yield ServerSentEventMessage(data=partial_text, event="done")
         except Exception as e:
-            error_html = f'<p class="text-error">{_html.escape(str(e))}</p>'
-            yield {"data": error_html, "event": "done"}
+            yield ServerSentEventMessage(data=str(e), event="error")
 
     return ServerSentEvent(_stream())
