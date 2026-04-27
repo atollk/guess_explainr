@@ -2,10 +2,10 @@
   import { getModels, saveConfig } from '../lib/api'
 
   interface Props {
-    onsaved: () => void
+    onSaved: () => void
   }
 
-  const { onsaved }: Props = $props()
+  const { onSaved }: Props = $props()
 
   let provider = $state('openai')
   let apiKey = $state('')
@@ -47,7 +47,7 @@
     error = undefined
     try {
       await saveConfig({ provider, model, api_key: apiKey, maps_api_key: mapsApiKey })
-      onsaved()
+      onSaved()
     } catch (err) {
       error = err instanceof Error ? err.message : 'An unexpected error occurred.'
     } finally {
@@ -112,7 +112,7 @@
       class="input input-bordered"
       bind:value={mapsApiKey}
     />
-    <label class="label">
+    <label class="label" for="maps-api-key">
       <span class="label-text-alt text-base-content/50">
         You can set up an API key for free with thousands of calls per month:
         <a href="https://developers.google.com/maps/documentation/tile/get-api-key">Click here</a>

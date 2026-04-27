@@ -79,7 +79,7 @@ def _fetch_via_official_api(panorama_id: str, maps_api_key: str) -> None:
         ) from e
     buf = io.BytesIO()
     img.save(buf, format="JPEG")
-    state.in_memory_state.panorama_image_bytes = buf.getvalue()
+    state.panorama_state.panorama_image_bytes = buf.getvalue()
 
 
 def _fetch_via_scraping(panorama_id: str) -> None:
@@ -92,7 +92,7 @@ def _fetch_via_scraping(panorama_id: str) -> None:
         ) from e
     buf = io.BytesIO()
     img.save(buf, format="JPEG")
-    state.in_memory_state.panorama_image_bytes = buf.getvalue()
+    state.panorama_state.panorama_image_bytes = buf.getvalue()
 
 
 async def fetch_and_cache(panorama_id: str) -> None:
@@ -121,7 +121,7 @@ async def fetch_and_cache(panorama_id: str) -> None:
 
 @get("/panorama-image", media_type="image/jpeg")
 async def panorama_image() -> Response[bytes]:
-    img = state.in_memory_state.panorama_image_bytes
+    img = state.panorama_state.panorama_image_bytes
     if not img:
         raise NotFoundException(detail="No panorama image available")
     return Response(content=img, media_type="image/jpeg")

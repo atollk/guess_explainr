@@ -5,11 +5,10 @@ import os
 import sys
 
 import tqdm
-from tqdm.contrib import DummyTqdmFile
-
 from image_compress import compress as compress_image  # pyrefly: ignore[missing-import]
 from plonkit_countries import Country, fetch_countries  # pyrefly: ignore[missing-import]
 from plonkit_pdf import fetch_country_guide_pdf  # pyrefly: ignore[missing-import]
+from tqdm.contrib import DummyTqdmFile
 
 
 @contextlib.contextmanager
@@ -28,7 +27,7 @@ def _std_out_err_redirect_tqdm():
 
 def main():
     countries = fetch_countries()
-    dir = os.path.join(os.path.dirname(__file__), "files", "plonkit")
+    dir = os.path.dirname(os.path.abspath(__file__))
     os.makedirs(dir, exist_ok=True)
 
     metadata_path = os.path.join(dir, "metadata.json")

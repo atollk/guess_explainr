@@ -200,6 +200,9 @@ node_modules/
 # Svelte build output
 src/guess_explainr/static/app/
 
+# Plonkit (old location — now lives at /plonkit/ in repo root)
+src/guess_explainr/static/files/
+
 # PyPI configuration file
 .pypirc
 

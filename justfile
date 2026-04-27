@@ -26,9 +26,9 @@ build-frontend:
 check-frontend:
     cd frontend && npm run check
 
-# Run development server with auto-reload
+# Run development server with auto-reload (uses local /plonkit/ files, skips GitHub sync)
 dev:
-    uv run uvicorn guess_explainr.app:app --reload
+    PLONKIT_LOCAL=1 uv run uvicorn guess_explainr.app:app --reload
 
 # Lint with ruff
 lint:
@@ -61,8 +61,7 @@ hooks:
 # Run lint + format check + typecheck
 check: lint fmt-check typecheck
 
-# Pull the Plonkit source files (can take a long time)
+# Regenerate the Plonkit PDF guides (can take a long time; requires Docker)
 pull-sources:
-    cd src/guess_explainr/static
     docker pull minidocks/weasyprint
-    uv run uv run src/guess_explainr/static/fetch_plonkit.py
+    cd plonkit && uv run python fetch_plonkit.py

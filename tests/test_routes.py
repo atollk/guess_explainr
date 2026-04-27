@@ -45,7 +45,7 @@ def test_panorama_image_404_when_no_image(client):
 
 
 def test_panorama_image_returns_jpeg_bytes(client):
-    state.in_memory_state.panorama_image_bytes = b"\xff\xd8\xff\xe0fake-jpeg"
+    state.panorama_state.panorama_image_bytes = b"\xff\xd8\xff\xe0fake-jpeg"
     r = client.get("/api/panorama-image")
     assert r.status_code == 200
     assert r.content == b"\xff\xd8\xff\xe0fake-jpeg"
@@ -106,7 +106,7 @@ def test_analysis_stream_streams_and_closes(client, monkeypatch):
         yield "**Greece** has white buildings."
 
     monkeypatch.setattr("guess_explainr.routes.step4.stream_analysis", _fake_stream)
-    state.in_memory_state.panorama_image_bytes = b"fake"
+    state.panorama_state.panorama_image_bytes = b"fake"
 
     r = client.get("/api/analysis-stream?countries=greece")
     assert r.status_code == 200
@@ -120,7 +120,7 @@ def test_analysis_stream_error_emits_done(client, monkeypatch):
         yield  # make it an async generator
 
     monkeypatch.setattr("guess_explainr.routes.step4.stream_analysis", _failing_stream)
-    state.in_memory_state.panorama_image_bytes = b"fake"
+    state.panorama_state.panorama_image_bytes = b"fake"
 
     r = client.get("/api/analysis-stream?countries=france")
     assert r.status_code == 200

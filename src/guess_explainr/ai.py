@@ -1,10 +1,11 @@
 import dataclasses
-import pathlib
+import textwrap
 from collections.abc import AsyncGenerator
 
 from pydantic_ai import Agent, BinaryContent, RunContext
 
 from guess_explainr import state
+from guess_explainr.plonkit_cache import get_plonkit_dir
 
 
 @dataclasses.dataclass(frozen=True)
@@ -15,17 +16,18 @@ class AgentDependency:
 
 def _make_agent() -> Agent[AgentDependency]:
     state_config = state.get_config()
-    prompt = (
-        "You are an experienced teacher of the game GeoGuessr.\n"
-        "You will be provided an image of a Google Street View location and a task to explain to "
-        "the user,so that they can learn to become better at the game from it.\n"
-        "\n"
-        "You will also be provided with a set of relevant guides.\n"
-        "These explain clues that might be used by players of the game to "
-        "distinguish locations from another.\n"
-        "Base all your analysis and explanations on content provided by these guides.\n",
-        "Output your response in plain text or Markdown formatting.",
-    )
+    prompt = textwrap.dedent("""
+        You are an experienced teacher of the game GeoGuessr.
+        You will be provided an image of a Google Street View location and a task to explain t
+        the user,so that they can learn to become better at the game from it.
+
+        You will also be provided with a set of relevant guides.
+        These explain clues that might be used by players of the game t
+        distinguish locations from another.
+        Base all your analysis and explanations on content provided by these guides.\
+        Output your response in plain text or Markdown formatting.
+        Never begin with greetings, thanks, or preambles. Start with substantive content. No sign-offs or apologies. Do not mention being a model.\
+        """)  # noqa: E501
 
     assert state_config.ai_provider is not None
     _, model = state_config.ai_provider.to_pydantic(
@@ -51,13 +53,12 @@ def _make_agent() -> Agent[AgentDependency]:
 
 
 def _load_plonkit_guide(country_id: str) -> BinaryContent:
-    dir = pathlib.Path("src/guess_explainr/static/files/plonkit")
-    filename = dir / f"{country_id}.pdf"
+    filename = get_plonkit_dir() / f"{country_id}.pdf"
     return BinaryContent(data=filename.read_bytes(), media_type="application/pdf")
 
 
 def _load_panorama_image() -> BinaryContent:
-    image_bytes = state.in_memory_state.panorama_image_bytes
+    image_bytes = state.panorama_state.panorama_image_bytes
     if not image_bytes:
         raise ValueError("Panorama image not available in state")
     return BinaryContent(data=image_bytes, media_type="image/jpeg")

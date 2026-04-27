@@ -244,8 +244,8 @@ async def _country_from_coords(lat: float, lon: float) -> _Country | None:
 @post("/process-url")
 async def process_url(data: ProcessUrlRequest) -> dict:
     location = GoogleMapsLocation.parse(data.url)
-    state.in_memory_state.panorama_id = location.panorama_id
-    state.in_memory_state.panorama_image_bytes = None
+    state.panorama_state.panorama_id = location.panorama_id
+    state.panorama_state.panorama_image_bytes = None
 
     try:
         country, _ = await asyncio.gather(
@@ -259,7 +259,7 @@ async def process_url(data: ProcessUrlRequest) -> dict:
     return {
         "detected_country": dataclasses.asdict(country),
         "available_countries": [dataclasses.asdict(c) for c in COUNTRIES],
-        "panorama_available": state.in_memory_state.panorama_image_bytes is not None,
+        "panorama_available": state.panorama_state.panorama_image_bytes is not None,
     }
 
 

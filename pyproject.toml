@@ -47,7 +47,7 @@ build-backend = "hatchling.build"
 packages = ["src/guess_explainr"]
 
 [tool.ruff]
-src = ["src", "src/guess_explainr/static"]
+src = ["src"]
 line-length = 100
 target-version = "py312"
 
@@ -70,7 +70,7 @@ indent-style = "space"
 [tool.pyrefly]
 project_includes = ["src"]
 python_version = "3.12"
-search_path = ["src", "src/guess_explainr/static"]
+search_path = ["src"]
 
 [tool.pytest.ini_options]
 asyncio_mode = "auto"

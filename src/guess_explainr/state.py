@@ -16,12 +16,21 @@ os.makedirs(os.path.dirname(_config_file), exist_ok=True)
 
 
 @dataclass
-class InMemoryState:
+class PanoramaState:
     panorama_id: str | None = None
     panorama_image_bytes: bytes | None = None
 
 
-in_memory_state = InMemoryState()
+@dataclass
+class PlonkitSyncState:
+    ready: bool = False
+    total: int = 0
+    done: int = 0
+    error: str | None = None
+
+
+panorama_state = PanoramaState()
+plonkit_sync_state = PlonkitSyncState()
 
 
 @dataclass
