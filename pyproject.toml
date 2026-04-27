@@ -5,6 +5,7 @@ description = "Geography learning app"
 readme = "README.md"
 requires-python = ">=3.12"
 dependencies = [
+    "browser-cookie3>=0.20",
     "frozendict>=2.4.7",
     "geoguessr-async>=2.1.0",
     "geopy>=2.4.1",
